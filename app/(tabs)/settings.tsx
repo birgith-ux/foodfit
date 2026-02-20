@@ -9,8 +9,73 @@ import { COLORS, DAY_TYPE_LABELS, DayType } from '../../constants/macroGoals';
 import { useSettingsStore } from '../../stores/settingsStore';
 import {
   getFavorites, deleteFavorite, renameFavorite, FavoriteRow,
+  addFavorite, addFavoriteItem,
   getDaysInRange, getFoodLogs,
 } from '../../services/database';
+import { generateId as uuidv4 } from '../../utils/uuid';
+
+const DEFAULT_FAVORITES = [
+  {
+    name: 'Halve banaan',
+    type: 'product',
+    items: [{ product_name: 'Halve banaan', amount_g: 60, kcal: 106, protein_g: 1.4, carbs_g: 27.4, fat_g: 0.4 }],
+  },
+  {
+    name: 'Banaan',
+    type: 'product',
+    items: [{ product_name: 'Banaan', amount_g: 120, kcal: 53, protein_g: 0.7, carbs_g: 13.7, fat_g: 0.2 }],
+  },
+  {
+    name: 'Organe Fit Choco Protein (26g)',
+    type: 'product',
+    items: [{ product_name: 'Organe Fit Choco Protein Powder', amount_g: 26, kcal: 100, protein_g: 20.2, carbs_g: 0.7, fat_g: 2.0 }],
+  },
+  {
+    name: 'Organe Fit Vanille Protein (26g)',
+    type: 'product',
+    items: [{ product_name: 'Organe Fit Vanille Protein Powder', amount_g: 26, kcal: 99, protein_g: 21.0, carbs_g: 1.1, fat_g: 1.8 }],
+  },
+  {
+    name: 'Organe Fit Coffee Protein (26g)',
+    type: 'product',
+    items: [{ product_name: 'Organe Fit Coffee Protein Powder', amount_g: 26, kcal: 101, protein_g: 20.0, carbs_g: 1.7, fat_g: 1.8 }],
+  },
+  {
+    name: 'Havermout met zaden, sprout melk, kaneel & appel',
+    type: 'meal',
+    items: [{ product_name: 'Havermout met zaden, sprout melk, kaneel & appel', amount_g: 1, kcal: 331, protein_g: 11.4, carbs_g: 38.9, fat_g: 12.8 }],
+  },
+  {
+    name: 'Havermout met zaden, sprout melk & blauwe bessen',
+    type: 'meal',
+    items: [{ product_name: 'Havermout met zaden, sprout melk & blauwe bessen', amount_g: 1, kcal: 335, protein_g: 12.1, carbs_g: 39.3, fat_g: 12.7 }],
+  },
+  {
+    name: 'Bananenbrood (1 plak)',
+    type: 'product',
+    items: [{ product_name: 'Bananenbrood', amount_g: 1, kcal: 160, protein_g: 5.6, carbs_g: 29.9, fat_g: 4.0 }],
+  },
+  {
+    name: 'Sprout melk (240ml)',
+    type: 'product',
+    items: [{ product_name: 'Sprout melk', amount_g: 240, kcal: 151, protein_g: 7.4, carbs_g: 15.6, fat_g: 8.2 }],
+  },
+  {
+    name: 'Avocado (klein)',
+    type: 'product',
+    items: [{ product_name: 'Avocado klein', amount_g: 1, kcal: 241, protein_g: 1.9, carbs_g: 1.1, fat_g: 13.6 }],
+  },
+  {
+    name: 'Avocado (groot)',
+    type: 'product',
+    items: [{ product_name: 'Avocado groot', amount_g: 1, kcal: 282, protein_g: 3.9, carbs_g: 2.3, fat_g: 27.2 }],
+  },
+  {
+    name: 'Dadel',
+    type: 'product',
+    items: [{ product_name: 'Dadel', amount_g: 1, kcal: 42, protein_g: 0.3, carbs_g: 9.7, fat_g: 0.0 }],
+  },
+];
 import { toDateString } from '../../utils/dateHelpers';
 
 const DAY_LABELS = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
@@ -88,6 +153,22 @@ export default function SettingsScreen() {
       'plain-text',
       fav.name
     );
+  };
+
+  const handleSeedFavorites = async () => {
+    try {
+      for (const fav of DEFAULT_FAVORITES) {
+        const favId = uuidv4();
+        await addFavorite({ id: favId, name: fav.name, type: fav.type, created_at: new Date().toISOString() });
+        for (const item of fav.items) {
+          await addFavoriteItem({ id: uuidv4(), favorite_id: favId, ...item });
+        }
+      }
+      await loadFavorites();
+      Alert.alert('Klaar!', `${DEFAULT_FAVORITES.length} standaard favorieten zijn toegevoegd.`);
+    } catch (e: any) {
+      Alert.alert('Fout', e.message);
+    }
   };
 
   const handleExportData = async () => {
@@ -256,6 +337,9 @@ export default function SettingsScreen() {
         {/* Favorites management */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Favorieten ({favorites.length})</Text>
+          <TouchableOpacity style={styles.seedBtn} onPress={handleSeedFavorites} activeOpacity={0.8}>
+            <Text style={styles.seedBtnText}>⭐ Standaard favorieten laden</Text>
+          </TouchableOpacity>
           {favorites.length === 0 ? (
             <Text style={styles.emptyText}>Geen favorieten opgeslagen.</Text>
           ) : (
@@ -449,6 +533,20 @@ const styles = StyleSheet.create({
   },
   favAction: { padding: 6 },
   favActionText: { fontSize: 18 },
+  seedBtn: {
+    backgroundColor: 'rgba(255,200,50,0.08)',
+    borderRadius: 12,
+    paddingVertical: 13,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,50,0.3)',
+    marginBottom: 12,
+  },
+  seedBtnText: {
+    fontSize: 14,
+    color: '#FFD700',
+    fontWeight: '600',
+  },
   exportBtn: {
     backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 12,

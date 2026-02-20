@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Alert,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Alert, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -37,6 +37,8 @@ export default function TodayScreen() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [savingSlot, setSavingSlot] = useState<MealSlotRow | null>(null);
+  const [favName, setFavName] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -261,6 +263,42 @@ export default function TodayScreen() {
           error={aiError}
         />
 
+        {/* Opslaan als favoriet — inline naam-invoer */}
+        {savingSlot && (
+          <View style={styles.savePanel}>
+            <Text style={styles.savePanelTitle}>⭐ Opslaan als favoriet</Text>
+            <Text style={styles.savePanelSub}>Geef een naam aan "{savingSlot.slot_name}"</Text>
+            <TextInput
+              style={styles.savePanelInput}
+              value={favName}
+              onChangeText={setFavName}
+              placeholder="Naam favoriet..."
+              placeholderTextColor={COLORS.textMuted}
+              autoFocus
+            />
+            <View style={styles.savePanelBtns}>
+              <TouchableOpacity
+                style={styles.savePanelCancel}
+                onPress={() => { setSavingSlot(null); setFavName(''); }}
+              >
+                <Text style={styles.savePanelCancelText}>Annuleren</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.savePanelConfirm, !favName.trim() && { opacity: 0.4 }]}
+                onPress={async () => {
+                  if (!favName.trim()) return;
+                  await handleSaveAsFavorite(getSlotItems(savingSlot.id), favName.trim());
+                  setSavingSlot(null);
+                  setFavName('');
+                }}
+                disabled={!favName.trim()}
+              >
+                <Text style={styles.savePanelConfirmText}>Opslaan</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
         {/* Meal Slots */}
         <View style={styles.slotsHeader}>
           <Text style={styles.sectionTitle}>Maaltijden</Text>
@@ -276,6 +314,7 @@ export default function TodayScreen() {
             items={getSlotItems(slot.id)}
             onAdd={handleAddToSlot}
             onDelete={removeFoodEntry}
+            onSave={(s, items) => { setSavingSlot(s); setFavName(s.slot_name); }}
             timeHint={getSlotTimeHint(slot.slot_name)}
           />
         ))}
@@ -488,5 +527,66 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     textAlign: 'center',
     lineHeight: 20,
+  },
+  savePanel: {
+    backgroundColor: 'rgba(255,200,50,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,50,0.3)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+  },
+  savePanelTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: 4,
+  },
+  savePanelSub: {
+    fontSize: 13,
+    color: COLORS.textMuted,
+    marginBottom: 12,
+  },
+  savePanelInput: {
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,50,0.25)',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: COLORS.text,
+    marginBottom: 12,
+  },
+  savePanelBtns: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  savePanelCancel: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  savePanelCancelText: {
+    fontSize: 14,
+    color: COLORS.textMuted,
+    fontWeight: '600',
+  },
+  savePanelConfirm: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,200,50,0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,50,0.4)',
+  },
+  savePanelConfirmText: {
+    fontSize: 14,
+    color: '#FFD700',
+    fontWeight: '700',
   },
 });

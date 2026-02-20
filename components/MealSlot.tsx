@@ -11,10 +11,11 @@ interface MealSlotProps {
   items: FoodLogRow[];
   onAdd: (slot: MealSlotRow) => void;
   onDelete: (id: string) => void;
+  onSave?: (slot: MealSlotRow, items: FoodLogRow[]) => void;
   timeHint?: string;
 }
 
-export default function MealSlot({ slot, items, onAdd, onDelete, timeHint }: MealSlotProps) {
+export default function MealSlot({ slot, items, onAdd, onDelete, onSave, timeHint }: MealSlotProps) {
   const [expanded, setExpanded] = useState(true);
   const totals = sumMacros(items);
   const hasTarget = !!slot.target_kcal;
@@ -66,15 +67,23 @@ export default function MealSlot({ slot, items, onAdd, onDelete, timeHint }: Mea
             <FoodLogItem key={item.id} item={item} onDelete={onDelete} />
           ))}
 
-          {/* Add button */}
-          <TouchableOpacity style={styles.addBtn} onPress={() => onAdd(slot)} activeOpacity={0.7}>
-            <LinearGradient
-              colors={['rgba(108,63,232,0.15)', 'rgba(108,63,232,0.08)']}
-              style={styles.addBtnGrad}
-            >
-              <Text style={styles.addText}>＋  Voeg toe</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          {/* Knoppen rij */}
+          <View style={styles.btnRow}>
+            <TouchableOpacity style={[styles.addBtn, { flex: 1 }]} onPress={() => onAdd(slot)} activeOpacity={0.7}>
+              <LinearGradient
+                colors={['rgba(108,63,232,0.15)', 'rgba(108,63,232,0.08)']}
+                style={styles.addBtnGrad}
+              >
+                <Text style={styles.addText}>＋  Voeg toe</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {onSave && items.length > 0 && (
+              <TouchableOpacity style={styles.saveBtn} onPress={() => onSave(slot, items)} activeOpacity={0.7}>
+                <Text style={styles.saveText}>⭐</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
     </View>
@@ -162,8 +171,13 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 2,
   },
-  addBtn: {
+  btnRow: {
+    flexDirection: 'row',
     marginTop: 10,
+    gap: 8,
+    alignItems: 'center',
+  },
+  addBtn: {
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
@@ -179,5 +193,18 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLight,
     fontWeight: '600',
     letterSpacing: 0.3,
+  },
+  saveBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,50,0.4)',
+    backgroundColor: 'rgba(255,200,50,0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveText: {
+    fontSize: 18,
   },
 });
