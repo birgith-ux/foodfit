@@ -41,14 +41,14 @@ const DEFAULT_FAVORITES = [
     items: [{ product_name: 'Organe Fit Coffee Protein Powder', amount_g: 26, kcal: 101, protein_g: 20.0, carbs_g: 1.7, fat_g: 1.8 }],
   },
   {
-    name: 'Havermout met zaden, sprout melk, kaneel & appel',
+    name: 'GVrije havermout, zaden, sprout melk, kaneel & appel',
     type: 'meal',
-    items: [{ product_name: 'Havermout met zaden, sprout melk, kaneel & appel', amount_g: 1, kcal: 331, protein_g: 11.4, carbs_g: 38.9, fat_g: 12.8 }],
+    items: [{ product_name: 'Glutenvrije havermout met zaden, sprout melk, kaneel & appel', amount_g: 1, kcal: 331, protein_g: 11.4, carbs_g: 38.9, fat_g: 12.8 }],
   },
   {
-    name: 'Havermout met zaden, sprout melk & blauwe bessen',
+    name: 'GVrije havermout, zaden, sprout melk & blauwe bessen',
     type: 'meal',
-    items: [{ product_name: 'Havermout met zaden, sprout melk & blauwe bessen', amount_g: 1, kcal: 335, protein_g: 12.1, carbs_g: 39.3, fat_g: 12.7 }],
+    items: [{ product_name: 'Glutenvrije havermout met zaden, sprout melk & blauwe bessen', amount_g: 1, kcal: 335, protein_g: 12.1, carbs_g: 39.3, fat_g: 12.7 }],
   },
   {
     name: 'Bananenbrood (1 plak)',
@@ -87,24 +87,24 @@ const DEFAULT_FAVORITES = [
     items: [{ product_name: 'Kipfilet', amount_g: 100, kcal: 110, protein_g: 23.0, carbs_g: 0.0, fat_g: 1.8 }],
   },
   {
-    name: 'Volle melk (200ml)',
+    name: 'Lactosevrije melk (200ml)',
     type: 'product',
-    items: [{ product_name: 'Volle melk', amount_g: 200, kcal: 130, protein_g: 6.6, carbs_g: 9.6, fat_g: 7.0 }],
+    items: [{ product_name: 'Lactosevrije melk', amount_g: 200, kcal: 130, protein_g: 6.6, carbs_g: 9.6, fat_g: 7.0 }],
   },
   {
-    name: 'Griekse yoghurt (150g)',
+    name: 'Lactosevrije Griekse yoghurt (150g)',
     type: 'product',
-    items: [{ product_name: 'Griekse yoghurt', amount_g: 150, kcal: 133, protein_g: 13.5, carbs_g: 5.1, fat_g: 6.0 }],
+    items: [{ product_name: 'Lactosevrije Griekse yoghurt', amount_g: 150, kcal: 133, protein_g: 13.5, carbs_g: 5.1, fat_g: 6.0 }],
   },
   {
-    name: 'Kwark mager (150g)',
+    name: 'Lactosevrije kwark mager (150g)',
     type: 'product',
-    items: [{ product_name: 'Kwark mager', amount_g: 150, kcal: 83, protein_g: 15.0, carbs_g: 6.5, fat_g: 0.3 }],
+    items: [{ product_name: 'Lactosevrije kwark mager', amount_g: 150, kcal: 83, protein_g: 15.0, carbs_g: 6.5, fat_g: 0.3 }],
   },
   {
-    name: 'Cottage cheese (100g)',
+    name: 'Kokosyoghurt (150g)',
     type: 'product',
-    items: [{ product_name: 'Cottage cheese', amount_g: 100, kcal: 98, protein_g: 11.1, carbs_g: 3.4, fat_g: 4.3 }],
+    items: [{ product_name: 'Kokosyoghurt', amount_g: 150, kcal: 158, protein_g: 1.4, carbs_g: 7.5, fat_g: 13.5 }],
   },
   {
     name: 'Zalm (100g)',
@@ -132,9 +132,14 @@ const DEFAULT_FAVORITES = [
     items: [{ product_name: 'Spinazie', amount_g: 100, kcal: 23, protein_g: 2.9, carbs_g: 3.6, fat_g: 0.4 }],
   },
   {
-    name: 'Amandelen (30g)',
+    name: 'Pompoenpitten (30g)',
     type: 'product',
-    items: [{ product_name: 'Amandelen', amount_g: 30, kcal: 173, protein_g: 6.0, carbs_g: 4.5, fat_g: 15.0 }],
+    items: [{ product_name: 'Pompoenpitten', amount_g: 30, kcal: 162, protein_g: 8.5, carbs_g: 2.5, fat_g: 13.0 }],
+  },
+  {
+    name: 'Zonnebloempitten (30g)',
+    type: 'product',
+    items: [{ product_name: 'Zonnebloempitten', amount_g: 30, kcal: 174, protein_g: 5.8, carbs_g: 4.0, fat_g: 15.0 }],
   },
   {
     name: 'Olijfolie (10ml)',
@@ -142,9 +147,9 @@ const DEFAULT_FAVORITES = [
     items: [{ product_name: 'Olijfolie', amount_g: 10, kcal: 88, protein_g: 0.0, carbs_g: 0.0, fat_g: 10.0 }],
   },
   {
-    name: 'Volkorenbrood (1 snee)',
+    name: 'Glutenvrij brood (1 snee)',
     type: 'product',
-    items: [{ product_name: 'Volkorenbrood', amount_g: 35, kcal: 81, protein_g: 3.7, carbs_g: 14.0, fat_g: 0.9 }],
+    items: [{ product_name: 'Glutenvrij brood', amount_g: 35, kcal: 79, protein_g: 2.1, carbs_g: 15.0, fat_g: 1.2 }],
   },
 ];
 import { toDateString } from '../../utils/dateHelpers';
