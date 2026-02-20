@@ -190,6 +190,24 @@ export async function renameFavorite(id: string, name: string): Promise<void> {
   if (error) throw error;
 }
 
+export async function deduplicateFavorites(): Promise<number> {
+  const { data, error } = await supabase.from('favorites').select('*').order('created_at');
+  if (error) throw error;
+  const all = data ?? [];
+  const seen = new Set<string>();
+  let removed = 0;
+  for (const fav of all) {
+    if (seen.has(fav.name)) {
+      await supabase.from('favorite_items').delete().eq('favorite_id', fav.id);
+      await supabase.from('favorites').delete().eq('id', fav.id);
+      removed++;
+    } else {
+      seen.add(fav.name);
+    }
+  }
+  return removed;
+}
+
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -9,7 +9,7 @@ import { COLORS, DAY_TYPE_LABELS, DayType } from '../../constants/macroGoals';
 import { useSettingsStore } from '../../stores/settingsStore';
 import {
   getFavorites, deleteFavorite, renameFavorite, FavoriteRow,
-  addFavorite, addFavoriteItem,
+  addFavorite, addFavoriteItem, deduplicateFavorites,
   getDaysInRange, getFoodLogs,
 } from '../../services/database';
 import { generateId as uuidv4 } from '../../utils/uuid';
@@ -233,15 +233,38 @@ export default function SettingsScreen() {
 
   const handleSeedFavorites = async () => {
     try {
+      const existing = await getFavorites();
+      const existingNames = new Set(existing.map((f) => f.name));
+      let added = 0;
       for (const fav of DEFAULT_FAVORITES) {
+        if (existingNames.has(fav.name)) continue;
         const favId = uuidv4();
         await addFavorite({ id: favId, name: fav.name, type: fav.type, created_at: new Date().toISOString() });
         for (const item of fav.items) {
           await addFavoriteItem({ id: uuidv4(), favorite_id: favId, ...item });
         }
+        added++;
       }
       await loadFavorites();
-      Alert.alert('Klaar!', `${DEFAULT_FAVORITES.length} standaard favorieten zijn toegevoegd.`);
+      if (added === 0) {
+        Alert.alert('Al up-to-date', 'Alle standaard favorieten staan er al in.');
+      } else {
+        Alert.alert('Klaar!', `${added} standaard favorieten toegevoegd.`);
+      }
+    } catch (e: any) {
+      Alert.alert('Fout', e.message);
+    }
+  };
+
+  const handleDeduplicateFavorites = async () => {
+    try {
+      const removed = await deduplicateFavorites();
+      await loadFavorites();
+      if (removed === 0) {
+        Alert.alert('Geen dubbelen', 'Er zijn geen dubbele favorieten gevonden.');
+      } else {
+        Alert.alert('Klaar!', `${removed} dubbele favoriet${removed === 1 ? '' : 'en'} verwijderd.`);
+      }
     } catch (e: any) {
       Alert.alert('Fout', e.message);
     }
@@ -415,6 +438,9 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Favorieten ({favorites.length})</Text>
           <TouchableOpacity style={styles.seedBtn} onPress={handleSeedFavorites} activeOpacity={0.8}>
             <Text style={styles.seedBtnText}>⭐ Standaard favorieten laden</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cleanupBtn} onPress={handleDeduplicateFavorites} activeOpacity={0.8}>
+            <Text style={styles.cleanupBtnText}>🧹 Dubbelen verwijderen</Text>
           </TouchableOpacity>
           {favorites.length === 0 ? (
             <Text style={styles.emptyText}>Geen favorieten opgeslagen.</Text>
@@ -616,11 +642,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,200,50,0.3)',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   seedBtnText: {
     fontSize: 14,
     color: '#FFD700',
+    fontWeight: '600',
+  },
+  cleanupBtn: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderRadius: 12,
+    paddingVertical: 11,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+    marginBottom: 12,
+  },
+  cleanupBtnText: {
+    fontSize: 13,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   exportBtn: {
