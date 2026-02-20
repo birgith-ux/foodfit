@@ -75,6 +75,77 @@ const DEFAULT_FAVORITES = [
     type: 'product',
     items: [{ product_name: 'Dadel', amount_g: 1, kcal: 42, protein_g: 0.3, carbs_g: 9.7, fat_g: 0.0 }],
   },
+  // Basisproducten
+  {
+    name: 'Ei (groot)',
+    type: 'product',
+    items: [{ product_name: 'Ei groot', amount_g: 60, kcal: 86, protein_g: 7.5, carbs_g: 0.4, fat_g: 6.0 }],
+  },
+  {
+    name: 'Kipfilet (100g)',
+    type: 'product',
+    items: [{ product_name: 'Kipfilet', amount_g: 100, kcal: 110, protein_g: 23.0, carbs_g: 0.0, fat_g: 1.8 }],
+  },
+  {
+    name: 'Volle melk (200ml)',
+    type: 'product',
+    items: [{ product_name: 'Volle melk', amount_g: 200, kcal: 130, protein_g: 6.6, carbs_g: 9.6, fat_g: 7.0 }],
+  },
+  {
+    name: 'Griekse yoghurt (150g)',
+    type: 'product',
+    items: [{ product_name: 'Griekse yoghurt', amount_g: 150, kcal: 133, protein_g: 13.5, carbs_g: 5.1, fat_g: 6.0 }],
+  },
+  {
+    name: 'Kwark mager (150g)',
+    type: 'product',
+    items: [{ product_name: 'Kwark mager', amount_g: 150, kcal: 83, protein_g: 15.0, carbs_g: 6.5, fat_g: 0.3 }],
+  },
+  {
+    name: 'Cottage cheese (100g)',
+    type: 'product',
+    items: [{ product_name: 'Cottage cheese', amount_g: 100, kcal: 98, protein_g: 11.1, carbs_g: 3.4, fat_g: 4.3 }],
+  },
+  {
+    name: 'Zalm (100g)',
+    type: 'product',
+    items: [{ product_name: 'Zalm', amount_g: 100, kcal: 208, protein_g: 20.0, carbs_g: 0.0, fat_g: 13.6 }],
+  },
+  {
+    name: 'Rijst gekookt (100g)',
+    type: 'product',
+    items: [{ product_name: 'Rijst gekookt', amount_g: 100, kcal: 130, protein_g: 2.7, carbs_g: 28.0, fat_g: 0.3 }],
+  },
+  {
+    name: 'Zoete aardappel (100g)',
+    type: 'product',
+    items: [{ product_name: 'Zoete aardappel', amount_g: 100, kcal: 86, protein_g: 1.6, carbs_g: 20.0, fat_g: 0.1 }],
+  },
+  {
+    name: 'Broccoli (100g)',
+    type: 'product',
+    items: [{ product_name: 'Broccoli', amount_g: 100, kcal: 34, protein_g: 2.8, carbs_g: 6.6, fat_g: 0.4 }],
+  },
+  {
+    name: 'Spinazie (100g)',
+    type: 'product',
+    items: [{ product_name: 'Spinazie', amount_g: 100, kcal: 23, protein_g: 2.9, carbs_g: 3.6, fat_g: 0.4 }],
+  },
+  {
+    name: 'Amandelen (30g)',
+    type: 'product',
+    items: [{ product_name: 'Amandelen', amount_g: 30, kcal: 173, protein_g: 6.0, carbs_g: 4.5, fat_g: 15.0 }],
+  },
+  {
+    name: 'Olijfolie (10ml)',
+    type: 'product',
+    items: [{ product_name: 'Olijfolie', amount_g: 10, kcal: 88, protein_g: 0.0, carbs_g: 0.0, fat_g: 10.0 }],
+  },
+  {
+    name: 'Volkorenbrood (1 snee)',
+    type: 'product',
+    items: [{ product_name: 'Volkorenbrood', amount_g: 35, kcal: 81, protein_g: 3.7, carbs_g: 14.0, fat_g: 0.9 }],
+  },
 ];
 import { toDateString } from '../../utils/dateHelpers';
 

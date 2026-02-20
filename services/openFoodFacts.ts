@@ -19,7 +19,7 @@ function parseProduct(product: any): NutritionData | null {
   if (!kcal) return null;
 
   return {
-    name: product.product_name || product.product_name_nl || 'Onbekend product',
+    name: product.product_name_nl || product.product_name || 'Onbekend product',
     barcode: product.code,
     kcal_100g: Math.round(kcal * 10) / 10,
     protein_100g: Math.round((n.proteins_100g || 0) * 10) / 10,
@@ -44,7 +44,7 @@ export async function searchByBarcode(barcode: string): Promise<NutritionData | 
 
 export async function searchByName(query: string): Promise<NutritionData[]> {
   try {
-    const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(query)}&json=1&page_size=20&action=process`;
+    const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(query)}&json=1&page_size=30&action=process&lc=nl&cc=nl&sort_by=unique_scans_n`;
     const res = await fetch(url);
     const data = await res.json();
     if (!data.products) return [];
@@ -52,8 +52,17 @@ export async function searchByName(query: string): Promise<NutritionData[]> {
     const results: NutritionData[] = [];
     for (const product of data.products) {
       const parsed = parseProduct(product);
-      if (parsed && parsed.name) results.push(parsed);
+      if (parsed && parsed.name && parsed.name !== 'Onbekend product') results.push(parsed);
     }
+
+    // Sorteer: producten waarvan de naam begint met de zoekterm komen bovenaan
+    const q = query.toLowerCase().trim();
+    results.sort((a, b) => {
+      const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+      const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+      return aStarts - bStarts;
+    });
+
     return results.slice(0, 15);
   } catch (e) {
     console.error('Search error:', e);
