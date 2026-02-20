@@ -140,11 +140,13 @@ export default function AddFoodModal({
 
   if (activeTab === 'barcode' && visible) {
     return (
-      <Modal visible={visible} animationType="slide">
-        <BarcodeScanner
-          onFound={(data) => { setSelected(data); setActiveTab('search'); }}
-          onCancel={() => setActiveTab('search')}
-        />
+      <Modal visible={visible} animationType="slide" statusBarTranslucent>
+        <View style={{ flex: 1, width: '100%', height: '100%' }}>
+          <BarcodeScanner
+            onFound={(data) => { setSelected(data); setActiveTab('search'); }}
+            onCancel={() => setActiveTab('search')}
+          />
+        </View>
       </Modal>
     );
   }

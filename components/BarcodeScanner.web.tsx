@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants/macroGoals';
 import { NutritionData, searchByBarcode } from '../services/openFoodFacts';
@@ -23,6 +23,7 @@ export default function BarcodeScanner({ onFound, onCancel }: BarcodeScannerProp
 
   useEffect(() => {
     let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
 
     async function start() {
       try {
@@ -49,10 +50,12 @@ export default function BarcodeScanner({ onFound, onCancel }: BarcodeScannerProp
       }
     }
 
-    start();
+    // Kleine delay zodat de Modal DOM klaar is vóór we de video starten
+    timer = setTimeout(() => start(), 300);
 
     return () => {
       cancelled = true;
+      clearTimeout(timer);
       readerRef.current?.reset();
     };
   }, []);
@@ -182,7 +185,11 @@ const CORNER_SIZE = 24;
 const CORNER_WIDTH = 3;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: {
+    width: '100%',
+    height: Dimensions.get('window').height,
+    backgroundColor: '#000',
+  },
   center: {
     flex: 1,
     alignItems: 'center',
